@@ -46,7 +46,7 @@ flip = false -- do not modify
 player_direction = "down" -- current direction
 player_riding_bike = true
 player_moving = false -- if the player is currently moving
-player_base_spd = 0.5
+player_base_spd = 1
 player_bike_spd = 2
 player_moving_mspd = player_bike_spd -- recommended to keep this and player_moving_spd similar
 player_moving_spd = player_bike_spd -- recommended to keep this and player_moving_spd similar
@@ -114,15 +114,15 @@ function player_move(pos, dt)
 end
 
 function player_move_check_collision(x, y)
-    return false
-    --[[
+    --return false
+
     for xn=1, #world.collides, 1 do
 
         if (collides_rect(x, y, 16, 16, world.collides[xn].x, world.collides[xn].y, world.collides[xn].w, world.collides[xn].h)) then
             return true
         end
     end
-    return false]]--
+    return false
 end
 
 function player_update(dt)

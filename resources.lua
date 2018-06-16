@@ -32,17 +32,18 @@ end
 
 function load_level()
     raw_map_data = TiledMap_Parse("maps/main_overworld.tmx")
-    chunks = raw_map_data[2][1]; --get some chunks from this nice big ol chunk data
-    local map_objects = raw_map_data[3];
-
-    generate_all_map_objects(map_objects)
+    --print(getMapChunks(raw_map_data))
+    --print(table_dump(getMapChunks(raw_map_data[2]))) --get some chunks from this nice big ol chunk data
+    --print(table_dump(getMapChunks(raw_map_data)[3]))
+    chunks = getMapChunks(raw_map_data);
+    generate_all_map_objects(getAllMapObjects(raw_map_data))
 
 
     -- search through the chunks to find something useful
-    for nx=0, #chunks, 1 do
+    for nx=1, #chunks, 1 do
       if (not (chunks[nx] == nil) and (chunks[nx].label == "chunk")) then --if the chunk is real
-
         local current_chunk = chunks[nx] -- cool, here is the chunk
+        --print(current_chunk)
         local current_chunk_tile_data = str_split(current_chunk[1], ',') --seperate our stupid array
 
         -- Generate chunk function, yo.
@@ -60,10 +61,15 @@ function generate_all_map_objects(map_objects)
     --world_collide_insert({x=0, y=0, w=32, h=32})
 
   --random_freaking_number = #map_objects
-  for nx=1, #map_objects, 1 do
-      local map_object = map_objects[nx].xarg
-      world_collide_insert({x=tonumber(map_object.x), y=tonumber(map_object.y), w=tonumber(map_object.width), h=tonumber(map_object.height)})
-      --random_freaking_number = map_objects[nx].xarg
+  if (debug.enabled) then
+    player_pos = getDebugPlayerStart(map_objects)
+  end
+
+
+  local colliders = getMapColliders(map_objects)
+  for nx=1, #colliders, 1 do
+      local collider = colliders[nx].xarg
+      world_collide_insert({x=tonumber(collider.x), y=tonumber(collider.y), w=tonumber(collider.width), h=tonumber(collider.height)})
   end
 end
 

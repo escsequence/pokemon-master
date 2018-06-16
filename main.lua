@@ -7,8 +7,6 @@ require 'functions'
 require 'manager'
 
 function love.load()
-	-- super important things first
-	print("test")
 	love.window.setTitle("Pokemon Remake")
 	font_n = love.graphics.newFont("fonts/Pokemon GB.ttf", 8)
 	font_lg = love.graphics.newFont("fonts/Pokemon GB.ttf", 16)
