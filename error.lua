@@ -8,6 +8,7 @@ critical_error = false
 
 debug = {
     enabled = true,
+		triggered = false,
     log = {},
     log_max_count = 10000, --Max count of debug items
     log_min_scroll = 50, -- at 50, usually the debug items go off the screen

@@ -1,15 +1,17 @@
+require 'lookups/lu_warp'
+
 local playerDrawDistance = 256
 
 local Tile = {}
 Tile.__index=Tile
 function Tile.new(x, y, layer, img)
-    local tile={x=x, y=y, layer=layer, img=img}
+    local tile={x=x, y=y, w=16, h=16, layer=layer, img=img}
     return setmetatable(tile, Tile)
 end
 
 function g2d(it)
     if not (it == nil) then
-        if withinView(player_pos.x - playerDrawDistance, player_pos.y - playerDrawDistance, playerDrawDistance*2.5, playerDrawDistance*2.5, it.x * 16, it.y * 16) then
+        if collides_rect(player_pos.x - playerDrawDistance, player_pos.y - playerDrawDistance, playerDrawDistance*2.5, playerDrawDistance*2.5, it.x * 16, it.y * 16, it.w, it.h) then
             return true
         else
             return false
@@ -37,20 +39,27 @@ function Collider.new(x, y, w, h)
     return setmetatable(collider, Collider)
 end
 function Collider:draw()
-    if (DEBUG_MODE) then
+    --if (DEBUG_MODE) then
         if (g2d(self)) then
-            love.graphics.push()
-            love.graphics.setColor(255, 0, 0, 50)
+            --love.graphics.push()
+            love.graphics.setColor(255, 0, 0, 0.5)
             love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
-            love.graphics.pop()
+            --love.graphics.pop()
         end
-    end
+    --end
 end
 
+local Warp = {}
+Warp.__index=warp
+function Warp.new(x, y, w, h, name)
+  local warp = {x=x, y=y, w=w, h=h, name=name, warp_to=WARP_POINT[name].point, player_dir=WARP_POINT[name].dir}
+  return setmetatable(warp, Warp)
+end
 
 world = {
     tiles = {},
     collides = {},
+    warps = {},
     events = {},
     triggers = {},
     objects = {},
@@ -61,6 +70,7 @@ function world_clear_all()
     world = {
         tiles = {},
         collides = {},
+        warps = {},
         events = {},
         triggers = {},
         objects = {},
@@ -79,9 +89,26 @@ function world_collide_insert(collide)
     table.insert(world.collides, Collider.new(collide.x, collide.y, collide.w, collide.h))
 end
 
+function world_warp_insert(warp)
+  table.insert(world.warps, Warp.new(warp.x, warp.y, warp.w, warp.h, warp.name))
+end
+
+function get_warp_pos(warp_name)
+  for id=1, #world.warps do
+    if not (world.warps[id] == nil) then
+      if (world.warps[id].name == warp_name) then
+        return {x = world.warps[id].x, y = world.warps[id].y}
+      end
+    end
+  end
+end
+
+
 function world_draw()
     world_tiles_draw();
-    --collider_debug_draw();
+    if (debug.triggered) then
+      collider_debug_draw();
+    end
 end
 
 function collider_debug_draw()

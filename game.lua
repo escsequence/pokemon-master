@@ -30,6 +30,13 @@ end
 function game_keyboard_update(dt)
     player_update_controls(dt)
 
+
+    if (love.keyboard.isDown("f1")) then
+        debug.triggered = true
+    end
+    if (love.keyboard.isDown("f2")) then
+        debug.triggered = false
+    end
     if (love.keyboard.isDown("f5")) then
         debug_error("your pressed f5", "test", true)
     end

@@ -46,6 +46,7 @@ flip = false -- do not modify
 player_direction = "down" -- current direction
 player_riding_bike = true
 player_moving = false -- if the player is currently moving
+player_actually_moving = false -- if the player is animating/actually moving in distance
 player_base_spd = 1
 player_bike_spd = 2
 player_moving_mspd = player_bike_spd -- recommended to keep this and player_moving_spd similar
@@ -53,6 +54,7 @@ player_moving_spd = player_bike_spd -- recommended to keep this and player_movin
 player_moving_distance = 16 -- distance player is set to move, in any direction
 player_current_animation = animation.walk.down
 num = frames.stand.down --base standing location
+just_warped = false -- this gets set if the player JUST warped
 
 --animate = animation_new({frames.stand.side, frames.walk.side}, 0.20)
 
@@ -114,15 +116,21 @@ function player_move(pos, dt)
 end
 
 function player_move_check_collision(x, y)
-    --return false
-
     for xn=1, #world.collides, 1 do
-
         if (collides_rect(x, y, 16, 16, world.collides[xn].x, world.collides[xn].y, world.collides[xn].w, world.collides[xn].h)) then
             return true
         end
     end
     return false
+end
+
+function player_move_check_obj(x, y, obj)
+  for xn=1, #obj, 1 do
+      if (collides_rect(x, y, 16, 16, obj[xn].x, obj[xn].y, obj[xn].w, obj[xn].h)) then
+          return obj[xn]
+      end
+  end
+  return false
 end
 
 function player_update(dt)
@@ -143,8 +151,10 @@ function player_update(dt)
                 end
                 if not (player_move_check_collision(player_pos.x + movex, player_pos.y)) then
                     player_pos.x = player_pos.x + player_moving_spd
+                    player_actually_moving = true
                 else
                     movex = 0
+                    player_actually_moving = false
                     if not (player_pos.x % 16 == 0) then
                         player_pos.x = player_pos.x + (player_pos.x % 16);
                     end
@@ -164,16 +174,18 @@ function player_update(dt)
                 end
                 if not (player_move_check_collision(player_pos.x + movex, player_pos.y)) then
                     player_pos.x = player_pos.x - player_moving_spd
+                    player_actually_moving = true
                 else
+                    player_actually_moving = false
                     movex = 0
+                    if not (player_pos.x % 16 == 0) then
+                        player_pos.x = player_pos.x - (player_pos.x % 16);
+                    end
                 end
                 camera.lookAt(math.ceil(player_pos.x), math.ceil(player_pos.y))
 
             elseif (movex == 0) then --no more movement
                 player_moving = false
-                if not (player_pos.x % 16 == 0) then
-                    player_pos.x = player_pos.x - (player_pos.x % 16);
-                end
             end
         end
 
@@ -191,8 +203,10 @@ function player_update(dt)
                 end
                 if not (player_move_check_collision(player_pos.x, player_pos.y + movey)) then
                     player_pos.y = player_pos.y + player_moving_spd
+                    player_actually_moving = true
                 else
                     movey = 0
+                    player_actually_moving = false
                     if not (player_pos.y % 16 == 0) then
                         movey = player_pos.y + (player_pos.y % 16);
                     end
@@ -212,8 +226,10 @@ function player_update(dt)
                 end
                 if not (player_move_check_collision(player_pos.x, player_pos.y + movey)) then
                     player_pos.y = player_pos.y - player_moving_spd
+                    player_actually_moving = true
                 else
                     movey = 0
+                    player_actually_moving = false
                     if not (player_pos.y % 16 == 0) then
                         player_pos.y = player_pos.y - (player_pos.y % 16);
                     end
@@ -222,9 +238,25 @@ function player_update(dt)
 
             elseif (movey == 0) then
                 player_moving = false
+                player_actually_moving = false
             end
         end
     end
+
+    if (just_warped) and not (player_actually_moving) then
+      just_warped=false
+    end
+
+    if not (just_warped) and not (player_actually_moving) then
+      warp_touch = player_move_check_obj(player_pos.x, player_pos.y, world.warps)
+      if (warp_touch) then
+        just_warped = true
+        player_pos = get_warp_pos(warp_touch.warp_to)
+        player_moving = false
+        player_move(warp_touch.player_dir)
+      end
+    end
+
 end
 
 function player_draw()

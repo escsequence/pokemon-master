@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="800" height="600" tilewidth="16" tileheight="16" infinite="1" nextobjectid="109">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="800" height="600" tilewidth="16" tileheight="16" infinite="1" nextobjectid="138">
  <tileset firstgid="1" source="../../../Dev/pokemon-master/tiled-stuff/pokemon_tiles.tsx"/>
- <layer name="Tiles" width="800" height="600">
+ <layer name="Tile" width="800" height="600">
   <data encoding="csv">
    <chunk x="-16" y="-16" width="16" height="16">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -65,15 +65,15 @@
 7,39,3,5,422,232,458,460,1,2,3,5,422,232,458,460,
 7,39,2,1,2,1,2,1,2,1,2,1,2,1,2,1,
 7,39,1,2,1,2,1,2,1,2,1,2,1,2,1,2,
-7,39,2,1,3,3,3,3,1,1,1,1,1,1,1,1,
-7,39,1,2,8,8,8,5,1,1,1,1,1,1,1,1,
-7,39,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-7,39,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-7,39,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-7,39,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-7,39,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-7,39,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-7,7,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+7,39,2,1,3,3,3,3,2,1,343,344,344,344,344,345,
+7,39,1,2,8,8,8,5,1,2,381,382,382,382,382,383,
+7,39,2,1,12,12,12,12,2,1,419,420,349,350,351,421,
+7,39,1,2,50,50,50,50,1,2,457,458,232,458,458,459,
+7,39,2,1,2,1,2,1,2,1,3,3,3,3,3,3,
+7,39,1,2,1,2,1,2,1,2,8,8,8,5,8,8,
+7,39,39,39,11,86,86,9,3,3,3,3,3,3,3,3,
+7,39,39,39,49,48,48,47,3,3,3,3,3,3,3,3,
+7,7,39,39,49,48,48,47,3,3,3,3,3,3,3,3
 </chunk>
    <chunk x="16" y="0" width="16" height="16">
 7,7,7,7,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -84,14 +84,14 @@
 2,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
 1,2,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
 2,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
-1,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
-1,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
-1,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
-1,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
-1,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
-1,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
-1,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
-1,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0
+1,2,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
+2,1,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
+1,2,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
+3,3,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
+3,3,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
+3,3,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
+3,3,39,7,0,0,0,0,0,0,0,0,0,0,0,0,
+3,3,39,7,0,0,0,0,0,0,0,0,0,0,0,0
 </chunk>
    <chunk x="-16" y="16" width="16" height="16">
 0,0,0,0,0,0,0,0,0,0,0,0,0,40,40,40,
@@ -112,8 +112,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </chunk>
    <chunk x="0" y="16" width="16" height="16">
-7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-0,0,0,7,0,0,0,0,0,0,0,0,0,0,7,7,
+7,7,7,7,49,48,48,47,7,7,7,7,7,7,7,7,
+0,0,0,7,49,48,48,47,0,0,0,0,0,0,7,7,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -149,7 +149,7 @@
 </chunk>
   </data>
  </layer>
- <layer name="Objects" width="800" height="600" visible="0" opacity="0.5">
+ <layer name="Object" width="800" height="600" visible="0" opacity="0.5">
   <data encoding="csv">
    <chunk x="0" y="0" width="16" height="16">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -171,26 +171,46 @@
 </chunk>
   </data>
  </layer>
- <objectgroup color="#ff0000" name="Colliders" opacity="0.5">
+ <objectgroup color="#ff0000" name="Collider" opacity="0.5">
   <object id="12" x="0" y="0" width="16" height="272"/>
   <object id="88" x="16" y="0" width="144" height="16"/>
   <object id="89" x="192" y="0" width="112" height="16"/>
   <object id="91" x="304" y="0" width="16" height="272"/>
-  <object id="93" x="16" y="240" width="16" height="32"/>
-  <object id="94" x="32" y="256" width="272" height="16"/>
-  <object id="96" x="64" y="32" width="64" height="48"/>
-  <object id="97" x="48" y="64" width="16" height="16"/>
-  <object id="98" x="192" y="32" width="64" height="48"/>
-  <object id="99" x="176" y="64" width="16" height="16"/>
+  <object id="93" x="16" y="240" width="16" height="16"/>
+  <object id="94" x="16" y="256" width="32" height="16"/>
+  <object id="96" x="64" y="32" width="64" height="32"/>
+  <object id="97" x="48" y="64" width="32" height="16"/>
+  <object id="98" x="192" y="32" width="64" height="32"/>
+  <object id="99" x="176" y="64" width="32" height="16"/>
   <object id="105" x="144" y="-64" width="16" height="64"/>
   <object id="106" x="192" y="-64" width="16" height="64"/>
   <object id="107" x="64" y="128" width="64" height="16"/>
+  <object id="109" x="128" y="256" width="176" height="16"/>
+  <object id="110" x="48" y="256" width="16" height="32"/>
+  <object id="114" x="160" y="112" width="96" height="48"/>
+  <object id="115" x="160" y="192" width="96" height="16"/>
+  <object id="121" x="96" y="64" width="32" height="16"/>
+  <object id="125" x="224" y="64" width="32" height="16"/>
+  <object id="126" x="160" y="160" width="32" height="16"/>
+  <object id="127" x="208" y="160" width="48" height="16"/>
  </objectgroup>
- <objectgroup color="#c8c800" name="InitalPlayerStartTest">
-  <object id="100" x="160" y="32" width="16" height="16"/>
+ <objectgroup color="#0000ff" name="WaterArea">
+  <object id="116" type="water" x="64" y="208" width="64" height="80"/>
  </objectgroup>
- <objectgroup name="Warp"/>
- <objectgroup name="Triggers"/>
- <objectgroup name="Events" visible="0"/>
+ <objectgroup color="#4bffc8" name="WildEncounterArea">
+  <object id="118" name="w" type="wild_encounter" x="160" y="-64" width="32" height="80"/>
+ </objectgroup>
+ <objectgroup color="#c8c800" name="InitalPlayerStartTest" offsetx="32" offsety="160">
+  <object id="134" x="48" y="-80" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup color="#ff00ff" name="Warp">
+  <object id="122" name="warp_tile_pt_1" type="warp" x="80" y="64" width="16" height="16"/>
+  <object id="129" name="warp_tile_pt_2" type="warp" x="208" y="64" width="16" height="16"/>
+  <object id="130" name="warp_tile_pt_3" type="warp" x="192" y="160" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup color="#ffff00" name="Trigger" offsetx="0" offsety="-16">
+  <object id="131" name="trigger_pt_1" type="trigger" x="160" y="16" width="32" height="16"/>
+ </objectgroup>
+ <objectgroup color="#ffff00" name="Event" visible="0"/>
  <objectgroup color="#00ff00" name="TownRoute"/>
 </map>

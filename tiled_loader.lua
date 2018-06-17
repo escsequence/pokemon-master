@@ -50,7 +50,7 @@ end
 function getMapChunks(node)
   local chunks = {}
   for k, sub in ipairs(node) do
-      if (sub.xarg.name == "Tiles") then
+      if (sub.xarg.name == "Tile") then
         for cid=1, #sub[1] do
           if not (sub[1][cid] == nil) then
             if (sub[1][cid].label == "chunk") then
@@ -77,7 +77,7 @@ end
 function getMapColliders(map_objects)
   local colliders = {}
   for oid=1, #map_objects do
-    if (map_objects[oid].xarg.name == "Colliders") then
+    if (map_objects[oid].xarg.name == "Collider") then
       for cid=1, #map_objects[oid] do
         table.insert(colliders, map_objects[oid][cid])
       end
@@ -86,14 +86,32 @@ function getMapColliders(map_objects)
   return colliders;
 end
 
+function getMapWarps(map_objects)
+  local warps = {}
+  for oid=1, #map_objects do
+    if (map_objects[oid].xarg.name == "Warp") then
+      for cid=1, #map_objects[oid] do
+        table.insert(warps, map_objects[oid][cid])
+      end
+    end
+  end
+  return warps;
+end
+
 function getDebugPlayerStart(map_objects)
   local debugStartPos = {x = 32, y = 32}
   for oid=1, #map_objects do
     if (map_objects[oid].xarg.name == "InitalPlayerStartTest") then
       for cid=1, #map_objects[oid] do
-        --print(table_dump(map_objects[oid][cid].xarg.x))
-        --table.insert(colliders, map_objects[oid][cid])
-        debugStartPos = {x = tonumber(map_objects[oid][cid].xarg.x), y = tonumber(map_objects[oid][cid].xarg.y)}
+        local offset = {x=0, y=0}
+        -- ALWAYS MAKLE SURE TO CHECK FOR OFFSETS...
+        if not (map_objects[oid].xarg.offsetx == nil) then
+          offset.x = tonumber(map_objects[oid].xarg.offsetx)
+        end
+        if not (map_objects[oid].xarg.offsety == nil) then
+          offset.y = tonumber(map_objects[oid].xarg.offsety)
+        end
+        debugStartPos = {x = tonumber(map_objects[oid][cid].xarg.x) + offset.x, y = tonumber(map_objects[oid][cid].xarg.y) + offset.y}
       end
     end
   end

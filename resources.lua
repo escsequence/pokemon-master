@@ -54,22 +54,41 @@ function load_level()
 end
 
 function generate_all_map_objects(map_objects)
-
-    --world_collide_insert({x=32, y=0, w=32, h=32})
-    --world_collide_insert({x=64, y=0, w=32, h=32})
-    --world_collide_insert({x=128, y=32, w=32, h=32})
-    --world_collide_insert({x=0, y=0, w=32, h=32})
-
-  --random_freaking_number = #map_objects
+  -- TODO: Remove on release
   if (debug.enabled) then
     player_pos = getDebugPlayerStart(map_objects)
+    print("debug mode start pos: (" .. player_pos.x .. ", " .. player_pos.y .. ")")
   end
 
+  generate_map_colliders(getMapColliders(map_objects))
+  generate_map_warps(getMapWarps(map_objects))
 
-  local colliders = getMapColliders(map_objects)
+
+end
+
+function generate_map_colliders(colliders)
+  if (debug.enabled) then
+    print("--[Loading Colliders]--")
+  end
   for nx=1, #colliders, 1 do
       local collider = colliders[nx].xarg
+      if (debug.enabled) then
+        print("[COLLIDER #" .. nx .. "] - (x: " .. collider.x .. ", y: " .. collider.y .. ", w: " .. collider.width .. ", h: " .. collider.height .. ")")
+      end
       world_collide_insert({x=tonumber(collider.x), y=tonumber(collider.y), w=tonumber(collider.width), h=tonumber(collider.height)})
+  end
+end
+
+function generate_map_warps(warps)
+  if (debug.enabled) then
+    print("--[Loading Warps]--")
+  end
+  for nx=1, #warps, 1 do
+      local warp = warps[nx].xarg
+      if (debug.enabled) then
+        print("[WARP #" .. nx .. "] - " .. warp.name .. " should warp to " .. WARP_POINT[warp.name].point)
+      end
+      world_warp_insert({x=tonumber(warp.x), y=tonumber(warp.y), w=tonumber(warp.width), h=tonumber(warp.height), name=warp.name})
   end
 end
 
