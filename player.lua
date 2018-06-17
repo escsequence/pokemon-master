@@ -186,6 +186,7 @@ function player_update(dt)
 
             elseif (movex == 0) then --no more movement
                 player_moving = false
+                player_actually_moving = false
             end
         end
 

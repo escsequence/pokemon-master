@@ -84,11 +84,15 @@ function generate_map_warps(warps)
     print("--[Loading Warps]--")
   end
   for nx=1, #warps, 1 do
+    if not (warps[nx] == nil or warps[nx].xarg.name == nil) then
       local warp = warps[nx].xarg
+      --print(table_dump(warp))
+
       if (debug.enabled) then
         print("[WARP #" .. nx .. "] - " .. warp.name .. " should warp to " .. WARP_POINT[warp.name].point)
       end
       world_warp_insert({x=tonumber(warp.x), y=tonumber(warp.y), w=tonumber(warp.width), h=tonumber(warp.height), name=warp.name})
+    end
   end
 end
 
