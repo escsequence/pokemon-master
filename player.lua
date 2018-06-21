@@ -152,6 +152,9 @@ function player_update(dt)
                 if not (player_move_check_collision(player_pos.x + movex, player_pos.y)) then
                     player_pos.x = player_pos.x + player_moving_spd
                     player_actually_moving = true
+                    if (just_warped) then
+                      just_warped=false
+                    end
                 else
                     movex = 0
                     player_actually_moving = false
@@ -175,6 +178,9 @@ function player_update(dt)
                 if not (player_move_check_collision(player_pos.x + movex, player_pos.y)) then
                     player_pos.x = player_pos.x - player_moving_spd
                     player_actually_moving = true
+                    if (just_warped) then
+                      just_warped=false
+                    end
                 else
                     player_actually_moving = false
                     movex = 0
@@ -205,6 +211,9 @@ function player_update(dt)
                 if not (player_move_check_collision(player_pos.x, player_pos.y + movey)) then
                     player_pos.y = player_pos.y + player_moving_spd
                     player_actually_moving = true
+                    if (just_warped) then
+                      just_warped=false
+                    end
                 else
                     movey = 0
                     player_actually_moving = false
@@ -228,6 +237,9 @@ function player_update(dt)
                 if not (player_move_check_collision(player_pos.x, player_pos.y + movey)) then
                     player_pos.y = player_pos.y - player_moving_spd
                     player_actually_moving = true
+                    if (just_warped) then
+                      just_warped=false
+                    end
                 else
                     movey = 0
                     player_actually_moving = false
@@ -244,17 +256,14 @@ function player_update(dt)
         end
     end
 
-    if (just_warped) and not (player_actually_moving) then
-      just_warped=false
-    end
-
     if not (just_warped) and not (player_actually_moving) then
       warp_touch = player_move_check_obj(player_pos.x, player_pos.y, world.warps)
       if (warp_touch) then
+        warp_effect()
         just_warped = true
         player_pos = get_warp_pos(warp_touch.warp_to)
         player_moving = false
-        player_move(warp_touch.player_dir)
+        --player_move(warp_touch.player_dir)
       end
     end
 

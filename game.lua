@@ -30,7 +30,6 @@ end
 function game_keyboard_update(dt)
     player_update_controls(dt)
 
-
     if (love.keyboard.isDown("f1")) then
         debug.triggered = true
     end
