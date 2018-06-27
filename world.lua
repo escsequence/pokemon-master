@@ -1,6 +1,8 @@
 require 'lookups/lu_warp'
 
-local playerDrawDistance = {
+MAP_SIZE = {WIDTH=1000, HEIGHT=1000} -- DO NOT CHANGE THIS EVER
+
+PLAYER_DRAW_DISTANCE = {
   x = 16,
   y = 16
 }
@@ -10,18 +12,6 @@ Tile.__index=Tile
 function Tile.new(x, y, layer, img)
     local tile={x=x, y=y, w=16, h=16, layer=layer, img=img}
     return setmetatable(tile, Tile)
-end
-
-function g2d(it)
-    if not (it == nil) then
-        --if collides_rect(player_pos.x - playerDrawDistance, player_pos.y - playerDrawDistance, playerDrawDistance*2.5, playerDrawDistance*2.5, it.x * 16, it.y * 16, it.w, it.h) then
-            return true
-        --else
-        --    return false
-        --end
-    else
-        return false
-    end
 end
 
 function Tile:draw()
@@ -40,54 +30,39 @@ function Collider.new(x, y, w, h)
     return setmetatable(collider, Collider)
 end
 function Collider:draw()
-    --if (DEBUG_MODE) then
-        --if (g2d(self)) then
-            --love.graphics.push()
-            love.graphics.setColor(255, 0, 0, 0.5)
-            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
-            --love.graphics.pop()
-        --end
-    --end
+  love.graphics.push()
+  love.graphics.setColor(255, 0, 0, 0.5)
+  love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+  love.graphics.pop()
 end
 
 local Warp = {}
 Warp.__index=warp
 function Warp.new(x, y, w, h, name)
-  local warp = {x=x, y=y, w=w, h=h, name=name, warp_to=WARP_POINT[name].point, player_dir=WARP_POINT[name].dir}
+  local warp = {x=x, y=y, w=w, h=h, name=name, warp_to=WARP_POINT[name].point, player_dir=WARP_POINT[name].dir, cont=WARP_POINT[name].cont}
   return setmetatable(warp, Warp)
 end
-function allocate_2darr(x, y)
-  local ar = {}
-  for i = 1, x do
-      ar[i] = {}
-
-      for j = 1, y do
-          ar[i][j] = nil -- Fill the values here
-      end
-  end
-  return ar
-end
 world = {
-    tiles = {},
-    tiles_arr = allocate_2darr(255, 255),
-    collides = {},
-    warps = {},
-    events = {},
-    triggers = {},
-    objects = {},
-    npcs = {}
+    tiles = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+    collides = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+    warps = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+    warps_list = {},
+    events = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+    triggers = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+    objects = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+    npcs = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT)
 }
 
 function world_clear_all()
     world = {
-        tiles = {},
-        tiles_arr = {{}},
-        collides = {},
-        warps = {},
-        events = {},
-        triggers = {},
-        objects = {},
-        npcs = {}
+        tiles = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+        collides = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+        warps = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+        warps_list = {},
+        events = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+        triggers = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+        objects = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT),
+        npcs = allocate_2darr(MAP_SIZE.WIDTH, MAP_SIZE.HEIGHT)
     }
 end
 
@@ -105,24 +80,30 @@ function world_update(dt)
 end
 
 function world_tile_insert(tile)
-    if not (tile.x <= 0 or tile.y <= 0) then
-      world.tiles_arr[tile.y][tile.x] = Tile.new(tile.x, tile.y, tile.layer, tile.img);
-    end
+  if not (tile.x <= 0 or tile.y <= 0) then
+    world.tiles[tile.y][tile.x] = Tile.new(tile.x, tile.y, tile.layer, tile.img);
+  end
 end
 
 function world_collide_insert(collide)
-    table.insert(world.collides, Collider.new(collide.x, collide.y, collide.w, collide.h))
+  if not (collide.x <= 0 or collide.y <= 0) then
+    world.collides[collide.y/16][collide.x/16] = Collider.new(collide.x, collide.y, collide.w, collide.h);
+    --print("inserted " .. table_dump(world.collides[collide.y][collide.x]))
+  end
 end
 
 function world_warp_insert(warp)
-  table.insert(world.warps, Warp.new(warp.x, warp.y, warp.w, warp.h, warp.name))
+  if not (warp.x <= 0 or warp.y <= 0) then
+    world.warps[warp.y/16][warp.x/16] = Warp.new(warp.x, warp.y, warp.w, warp.h, warp.name);
+    table.insert(world.warps_list, Warp.new(warp.x, warp.y, warp.w, warp.h, warp.name))
+  end
 end
 
 function get_warp_pos(warp_name)
-  for id=1, #world.warps do
-    if not (world.warps[id] == nil) then
-      if (world.warps[id].name == warp_name) then
-        return {x = world.warps[id].x, y = world.warps[id].y}
+  for id=1, #world.warps_list do
+    if not (world.warps_list[id] == nil) then
+      if (world.warps_list[id].name == warp_name) then
+        return {x = world.warps_list[id].x, y = world.warps_list[id].y}
       end
     end
   end
@@ -146,42 +127,43 @@ function world_draw()
 end
 
 function collider_debug_draw()
-    for index=0, #world.collides, 1 do
-        if not (world.collides[index] == nil) then
-            world.collides[index]:draw()
+  local i, d, k, w = camera.getViewport()
+  startx = math.floor(i / 16)
+  startx = clamp(startx, 1, MAP_SIZE.WIDTH)
+  starty = math.floor(d / 16)
+  starty = clamp(starty, 1, MAP_SIZE.HEIGHT)
+  endx = startx + PLAYER_DRAW_DISTANCE.x
+  endx = clamp(endx, 1, MAP_SIZE.WIDTH)
+  endy = starty + PLAYER_DRAW_DISTANCE.y
+  endy = clamp(endy, 1, MAP_SIZE.HEIGHT)
+  for indy=starty, endy, 1 do
+    for indx=startx, endx, 1 do
+      if not (world.collides[indy] == nil) then
+        if not (world.collides[indy][indx] == nil) then
+          world.collides[indy][indx]:draw()
         end
+      end
     end
+  end
 end
 
 function world_tiles_draw()
-    love.graphics.push()
-    --love.graphics.setColor(255, 255, 255, 255)
     local i, d, k, w = camera.getViewport()
-
     startx = math.floor(i / 16)
-
-    --startx = clamp(startx, 1, 500)
+    startx = clamp(startx, 1, MAP_SIZE.WIDTH)
     starty = math.floor(d / 16)
-    --starty = clamp(starty, 1, 500)
-    endx = startx + playerDrawDistance.x
-    --endx = clamp(endx, 1, 500)
-    endy = starty + playerDrawDistance.y
-    --endy = clamp(endy, 1, 500)
-
+    starty = clamp(starty, 1, MAP_SIZE.HEIGHT)
+    endx = startx + PLAYER_DRAW_DISTANCE.x
+    endx = clamp(endx, 1, MAP_SIZE.WIDTH)
+    endy = starty + PLAYER_DRAW_DISTANCE.y
+    endy = clamp(endy, 1, MAP_SIZE.HEIGHT)
     for indy=starty, endy, 1 do
       for indx=startx, endx, 1 do
-        if not (world.tiles_arr[indy] == nil) then
-          if not (world.tiles_arr[indy][indx] == nil) then
-            world.tiles_arr[indy][indx]:draw()
+        if not (world.tiles[indy] == nil) then
+          if not (world.tiles[indy][indx] == nil) then
+            world.tiles[indy][indx]:draw()
           end
         end
       end
     end
-    --[[
-    for index=1, table.getn(world.tiles), 1 do
-        if not (world.tiles[index] == nil) then
-            world.tiles[index]:draw()
-        end
-    end]]--
-    love.graphics.pop()
 end

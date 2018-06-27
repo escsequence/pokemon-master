@@ -44,13 +44,16 @@ movey = 0
 
 flip = false -- do not modify
 player_direction = "down" -- current direction
-player_riding_bike = true
+player_riding_bike = false
+player_allow_running = true
+player_running = false
 player_moving = false -- if the player is currently moving
 player_actually_moving = false -- if the player is animating/actually moving in distance
 player_base_spd = 1
-player_bike_spd = 2
-player_moving_mspd = player_bike_spd -- recommended to keep this and player_moving_spd similar
-player_moving_spd = player_bike_spd -- recommended to keep this and player_moving_spd similar
+player_run_spd = 2
+player_bike_spd = 4
+player_moving_mspd = player_base_spd -- recommended to keep this and player_moving_spd similar
+player_moving_spd = player_base_spd -- recommended to keep this and player_moving_spd similar
 player_moving_distance = 16 -- distance player is set to move, in any direction
 player_current_animation = animation.walk.down
 num = frames.stand.down --base standing location
@@ -94,6 +97,23 @@ function player_update_controls(dt)
     if not love.keyboard.isDown("a") then
         keypressed = false
     end
+
+    if love.keyboard.isDown("lshift") then
+      if (player_allow_running) then
+        if not (player_riding_bike) then
+          player_running = true
+          player_moving_mspd = player_run_spd
+          player_moving_spd = player_run_spd
+        end
+      end
+    end
+    if not love.keyboard.isDown("lshift") then
+      player_running = false
+      if not (player_riding_bike) then
+        player_moving_mspd = player_base_spd
+        player_moving_spd = player_base_spd
+      end
+    end
 end
 
 function player_move(pos, dt)
@@ -116,19 +136,51 @@ function player_move(pos, dt)
 end
 
 function player_move_check_collision(x, y)
-    for xn=1, #world.collides, 1 do
-        if (collides_rect(x, y, 16, 16, world.collides[xn].x, world.collides[xn].y, world.collides[xn].w, world.collides[xn].h)) then
-            return true
+  local i, d, k, w = camera.getViewport()
+  startx = math.floor(i / 16) - (PLAYER_DRAW_DISTANCE.x * 8)
+  startx = clamp(startx, 1, MAP_SIZE.WIDTH)
+  starty = math.floor(d / 16) - (PLAYER_DRAW_DISTANCE.y * 8)
+  starty = clamp(starty, 1, MAP_SIZE.HEIGHT)
+  endx = startx + (PLAYER_DRAW_DISTANCE.x * 8)
+  endx = clamp(endx, 1, MAP_SIZE.WIDTH)
+  endy = starty + (PLAYER_DRAW_DISTANCE.y * 8)
+  endy = clamp(endy, 1, MAP_SIZE.HEIGHT)
+  for indy=starty, endy, 1 do
+    for indx=startx, endx, 1 do
+      if not (world.collides[indy] == nil) then
+        if not (world.collides[indy][indx] == nil) then
+          if (collides_rect(x, y, 16, 16, world.collides[indy][indx].x, world.collides[indy][indx].y, world.collides[indy][indx].w, world.collides[indy][indx].h)) then
+              return true
+          end
         end
+      end
     end
-    return false
+  end
+  return false
+  --return true
 end
 
 function player_move_check_obj(x, y, obj)
-  for xn=1, #obj, 1 do
-      if (collides_rect(x, y, 16, 16, obj[xn].x, obj[xn].y, obj[xn].w, obj[xn].h)) then
-          return obj[xn]
+  local i, d, k, w = camera.getViewport()
+  startx = math.floor(i / 16)
+  startx = clamp(startx, 1, MAP_SIZE.WIDTH)
+  starty = math.floor(d / 16)
+  starty = clamp(starty, 1, MAP_SIZE.HEIGHT)
+  endx = startx + PLAYER_DRAW_DISTANCE.x
+  endx = clamp(endx, 1, MAP_SIZE.WIDTH)
+  endy = starty + PLAYER_DRAW_DISTANCE.y
+  endy = clamp(endy, 1, MAP_SIZE.HEIGHT)
+  for indy=starty, endy, 1 do
+    for indx=startx, endx, 1 do
+      if not (obj[indy] == nil) then
+        if not (obj[indy][indx] == nil) then
+          --print("k")
+          if (collides_rect(x, y, 16, 16, obj[indy][indx].x, obj[indy][indx].y, obj[indy][indx].w, obj[indy][indx].h)) then
+              return obj[indy][indx]; --
+          end
+        end
       end
+    end
   end
   return false
 end
@@ -259,18 +311,18 @@ function player_update(dt)
     if not (just_warped) and not (player_actually_moving) then
       warp_touch = player_move_check_obj(player_pos.x, player_pos.y, world.warps)
       if (warp_touch) then
-        warp_effect()
         just_warped = true
         player_pos = get_warp_pos(warp_touch.warp_to)
-        player_moving = false
-        --player_move(warp_touch.player_dir)
+        if (warp_touch.cont) then
+          player_move(player_direction)
+        end
       end
     end
 
 end
 
 function player_draw()
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(1, 0.5, 0.5, 1)
     if (player_moving) then
         -- If player is moving, draw dis - sucka!
         animation_draw(player_current_animation, player_pos.x, player_pos.y, flip);

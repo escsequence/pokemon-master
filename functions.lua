@@ -9,6 +9,17 @@ function colorToRGB(color)
 	--end
 end
 
+function allocate_2darr(x, y)
+  local ar = {}
+  for i = 1, x do
+      ar[i] = {}
+      for j = 1, y do
+          ar[i][j] = nil
+      end
+  end
+  return ar
+end
+
 function clamp(min, val, max)
     return math.max(min, math.min(val, max));
 end

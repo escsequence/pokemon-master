@@ -5,7 +5,7 @@ require 'pokemon'
 camera = require 'camera'
 
 important_index = 0
-game_scale = 4
+game_scale = 5
 game_menu_scale = 2
 
 function game_load()
@@ -32,9 +32,12 @@ function game_keyboard_update(dt)
 
     if (love.keyboard.isDown("f1")) then
         debug.triggered = true
+        print("--DEBUG MODE ENABLED--")
     end
     if (love.keyboard.isDown("f2")) then
         debug.triggered = false
+        print("--DEBUG MODE DISABLED--")
+
     end
     if (love.keyboard.isDown("f5")) then
         debug_error("your pressed f5", "test", true)

@@ -4,8 +4,8 @@
 local viewport = {
   l = 0,
   t = 0,
-  w = love.graphics.getWidth()/4,
-  h = love.graphics.getHeight()/4
+  w = love.graphics.getWidth()/6,
+  h = love.graphics.getHeight()/6
 }
 
 local boundary = {
