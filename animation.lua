@@ -1,5 +1,3 @@
--- STEAL MY SHIT I WILL EAT YOUR SOUL
--- Embeded in this code is copyright tracking code, watch yoself.
 local base_sprite_dimensions = 16 -- 16x16 for sprites
 function typeof(var)
     local _type = type(var);
