@@ -1,6 +1,6 @@
 -- Global variables stored here
 
--- quick scope access for devs, 420blazeit
+-- quick scope access for devs
 l = {
     g = love.graphics,
     maf = love.math,
@@ -9,7 +9,7 @@ l = {
 }
 
 
--- Keyboard binding defaults, if nothing is changed in settings - this will be it
+-- Keyboard binding defaults
 keyboard_bindings = {
     move = {
         up = "up",
